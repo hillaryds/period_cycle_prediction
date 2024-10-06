@@ -1,5 +1,6 @@
 from pendulum import DateTime
 from pendulum import duration
+from pendulum import instance
 import pandas as pd
 import numpy as np
 from random import randint
@@ -211,3 +212,25 @@ def convet2dataframe(data, columns):
     data_frame = pd.DataFrame(data[0], columns=columns)
     data_frame['time'] = data_frame.index
     return data_frame
+
+def calcular_datas_periodos(dataset, output_predicao):
+    """
+    Função que calcula as datas do próximo ciclo menstrual e do período com base nos dados do último período e nas previsões.
+
+    Args: 
+        dataset (list): lista de listas contendo dados dos períodos anteriores
+        output_predicao (list): lista de listas contendo as previsões dos ciclos posteriores
+
+    """
+
+    dados_ultimo_periodo = dataset[-1]    
+    data_ultimo_periodo = instance(dados_ultimo_periodo[0])
+    datas_dos_ciclos = []
+    
+    for predicao in output_predicao:
+        data_inicio = data_ultimo_periodo.add(days=int(predicao[0]))
+        datas_dos_ciclos.append(data_inicio)
+        data_ultimo_periodo = data_inicio
+    
+
+    return datas_dos_ciclos
