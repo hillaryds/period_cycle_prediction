@@ -47,7 +47,14 @@ if __name__ == '__main__':
     predicao_um_passo_a_frente = model_LR.predict([test_x[-1]])
     cycles_numbers = np.arange(1, len(cycle_length)+1)
 
+    output_pred.append([int(round(predicao_um_passo_a_frente[0][0])), int(round(predicao_um_passo_a_frente[0][1]))])
+    output_datas_pred = utils.calcular_datas_periodos(periods_data, output_pred)
+    output_datas_real = utils.calcular_datas_periodos(periods_data, test_y)
+    output_datas_combined = output_datas_pred + output_datas_real
 
+
+    cycle_length_pred = cycle_length.copy()
+    cycle_length_pred.append(predicao_um_passo_a_frente[0][0])
 
 
     
@@ -104,6 +111,21 @@ if __name__ == '__main__':
     plt.title('Modelo Regressão Linear')
     fig = plt.gcf()
     fig.savefig('linear_error_periods.png', dpi=300, bbox_inches='tight')
+    plt.show()
+
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(output_datas_pred, cycle_length_pred, '-o', color='blue', linewidth=2)
+    plt.plot(output_datas_real, test_y[:,0],':o', color='red', linewidth=2)
+    plt.xlabel('Data de Início do Ciclo')
+    plt.ylabel('Duração do Ciclo (Dias)')
+    plt.title('Duração dos Ciclos ao Longo do Tempo')
+    plt.xticks(output_datas_combined, rotation=45) 
+    plt.grid(True)
+    plt.legend(['Predito', 'Real'])
+    plt.gcf().autofmt_xdate()  
+    fig = plt.gcf()
+    fig.savefig('ciclos_datas.png', dpi=300, bbox_inches='tight')
     plt.show()
 
 
